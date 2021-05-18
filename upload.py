@@ -180,22 +180,11 @@ def check_file(path):
 #-----------------------------------------------
 #Executing querry and save results
 #----------------------------------------------- 
-querry = ("""SELECT res2019.regname  AS "Region",
-        res2019.phys_avg AS "Physics 2019",
-        res2020.phys_avg AS "Physics 2020"
-    FROM (SELECT regname, avg(engball100) phys_avg
-        FROM results
-        WHERE results.physteststatus = 'Зараховано'
-            AND results.year = 2019
-        GROUP BY results.regname) AS res2019
-            JOIN
-        (SELECT regname, avg(physball100) AS phys_avg
-        FROM results
-        WHERE results.physteststatus = 'Зараховано'
-            AND results.year = 2020
-        GROUP BY results.regname) AS res2020
-        ON res2019.regname = res2020.regname
-    ORDER BY "Region";""")
+querry = ("""SELECT regname AS region, "year", AVG(physball100) AS ball
+                              FROM results
+                              WHERE physteststatus = 'Зараховано' AND "year" IN (2019, 2020)
+                              GROUP BY region, "year"
+                              ORDER BY region, "year";""")
 
 def do_querry(querry,conn):
     print('Start querry executing')
